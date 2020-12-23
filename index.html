@@ -1,0 +1,426 @@
+
+<head>
+    <title>NinjaMan</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .row {
+            line-height: 0;
+        }
+
+        .wall {
+			background-image: url('img/stoneWalkway.jpg');
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+        }
+
+        .blank {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+        }
+
+        .sushi {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+            background-image: url('img/candy-2.png');
+            background-size: contain;
+        }
+
+        .onigiri {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+            background-image: url('img/candy-1.png');
+            background-size: contain;
+        }
+
+        #ninjaman {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+            background-image: url('img/landon.gif');
+            background-size: contain;
+            position: absolute;
+            left: 40px;
+            top: 40px;
+        }
+
+        #score {
+		    width: 40px;
+			display: inline-block;
+    	}
+
+        #bluey {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+            background-image: url('img/lainey.gif');
+            background-size: contain;
+            position: absolute;
+            left: 40px;
+            top: 40px;
+        }
+
+        #pinky {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+            background-image: url('img/lainey.gif');
+            background-size: contain;
+            position: absolute;
+            left: 40px;
+            top: 40px;
+        }
+        
+        #pumpky {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+            background-image: url('img/lainey.gif');
+            background-size: contain;
+            position: absolute;
+            left: 40px;
+            top: 40px;
+        }
+
+        #red {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+            background-image: url('img/lainey.gif');
+            background-size: contain;
+            position: absolute;
+            left: 40px;
+            top: 40px;
+        }
+
+
+
+    </style>
+</head>
+
+<body>
+    <div id='world'> </div>
+    <div id='ninjaman'></div>
+    <div id='bluey'></div>
+    <div id='pinky'></div>
+    <div id='pumpky'></div>
+    <div id='red'></div>
+    <div><h1>Score: <span id="score"></span>
+</body>
+
+<script type="text/javascript">
+
+//world
+    function x(){
+        var items = [0, 2, 3];
+        var x = items[Math.floor(Math.random()*items.length)];
+        return x;
+    }
+
+    var world = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, x(), x(), x(), 1, x(), x(), x(), 1, x(), x(), x(), 1],
+        [1, x(), 1, x(), x(), x(), 1, x(), x(), x(), 1, x(), 1],
+        [1, x(), 1, x(), 1, x(), x(), x(), 1, x(), 1, x(), 1],
+        [1, x(), x(), x(), 1, 1, x(), 1, 1, x(), x(), x(), 1],
+        [1, 1, 1, x(), 1, x(), x(), x(), 1, x(), 1, 1, 1],
+        [x(), 0, x(), x(), x(), x(), 1, x(), x(), x(), x(), x(), x()],
+        [1, 1, 1, x(), 1, x(), x(), x(), 1, x(), 1, 1, 1],
+        [1, x(), x(), x(), 1, 1, x(), 1, 1, x(), x(), x(), 1],
+        [1, x(), 1, x(), 1, x(), x(), x(), 1, x(), 1, x(), 1],
+        [1, x(), 1, x(), x(), x(), 1, x(), x(), x(), 1, x(), 1],
+        [1, x(), x(), x(), 1, x(), x(), x(), 1, x(), x(), x(), 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ];
+
+
+    var worldDict = {
+        0: 'blank',
+        1: 'wall',
+        2: 'sushi',
+        3: 'onigiri'
+    }
+
+    var teleport1 = {
+        x:0,
+        y:6
+    }
+    var teleport2 ={
+        x:12,
+        y:6
+    }
+
+    function drawWorld() {
+        output = "";
+
+        for (var row = 0; row < world.length; row++) {
+            output += "<div class = 'row'>"
+            for (var x = 0; x < world[row].length; x++) {
+                output += "<div class = '" + worldDict[world[row][x]] + "'></div>"
+            }
+            output += "</div>"
+        }
+
+        document.getElementById('world').innerHTML =
+            output;
+    };
+    // character
+    var ninjaman = {
+        x: 1,
+        y: 6
+    }
+
+    function drawNinjaman() {
+        document.getElementById('ninjaman').style.top = ninjaman.y * 40 + 'px'
+        document.getElementById('ninjaman').style.left = ninjaman.x * 40 + 'px'
+    }
+
+    //baddies
+    var bluey = {
+        x: 5,
+        y: 5,
+        movement: [],
+        lastX: 5,
+        lastY: 5
+    }
+    var pinky = {
+        x: 7,
+        y: 5,
+        movement: [],
+        lastX: 7,
+        lastY: 5
+    }
+    var pumpky = {
+        x: 5,
+        y: 7,
+        movement: [],
+        lastX: 5,
+        lastY: 7
+    }
+    var red = {
+        x: 7,
+        y: 7,
+        movement: [],
+        lastX:7,
+        lastY: 7
+    }
+
+    var ghosts = [bluey, pinky, pumpky, red];
+    
+    //show the baddies
+    function drawPumpkins() {
+        document.getElementById('bluey').style.top = bluey.y * 40 + 'px'
+        document.getElementById('bluey').style.left = bluey.x * 40 + 'px'
+
+        document.getElementById('pinky').style.top = pinky.y * 40 + 'px'
+        document.getElementById('pinky').style.left = pinky.x * 40 + 'px'
+
+        document.getElementById('pumpky').style.top = pumpky.y * 40 + 'px'
+        document.getElementById('pumpky').style.left = pumpky.x * 40 + 'px'
+
+        document.getElementById('red').style.top = red.y * 40 + 'px'
+        document.getElementById('red').style.left = red.x * 40 + 'px'
+    }
+
+    //figure out where baddies can move
+    function checkMovement(){
+       
+        for (var i = 0; i < ghosts.length; i++){
+            var ghost = ghosts[i];
+
+            if (world[ghost.y][ghost.x - 1] != 1 
+            && ghost.lastX != ghost.x - 1){ //left
+                ghost.movement.push(0);
+            }
+            if (world[ghost.y][ghost.x + 1] != 1
+            && ghost.lastX + 1 != ghost.x -1){ //right
+                ghost.movement.push(1);
+            }
+            if (world[ghost.y + 1][ghost.x] != 1 &&
+            ghost.lastY != ghost.y +1){//down
+                ghost.movement.push(2);
+            }
+            if (world[ghost.y - 1][ghost.x] != 1
+            && ghost.lastY != ghost.y -1) {//up
+                ghost.movement.push(3);
+            }
+        }
+    }
+
+    //move the baddies
+    function movePumpkins(){
+
+    for (var i = 0; i < ghosts.length; i++) {
+        var ghost = ghosts[i];
+        var m = ghost.movement[Math.floor(Math.random()*ghost.movement.length)]
+
+        if (m == 0) {//left
+            ghost.lastX = ghost.x;
+                ghost.lastY = ghost.y;
+                ghost.x--;
+            if (ghost.y == teleport1.y && ghost.x == teleport1.x-1){
+                ghost.y = teleport2.y, ghost.x = teleport2.x;
+            }
+        }
+
+        if (m == 1) {//right
+            ghost.lastX = ghost.x;
+                ghost.lastY = ghost.y;
+                ghost.x++;
+            if (ghost.y == teleport2.y && ghost.x == teleport2.x+1){
+                ghost.y = teleport1.y, ghost.x = teleport1.x;
+            }
+        }
+
+        if (m == 2) { //down
+            ghost.lastX = ghost.x;
+                ghost.lastY = ghost.y;
+                ghost.y++;
+        }        
+
+        if (m == 3) { //up
+                ghost.lastX = ghost.x;
+                ghost.lastY = ghost.y;
+                ghost.y--;
+        }
+        
+        ghost.movement = [];
+    }
+    }
+    
+    // scores and nomming
+    var score = 0;
+
+    function drawScore(){
+            if (world[ninjaman.y][ninjaman.x] == 2) {
+            score += 10;
+            world[ninjaman.y][ninjaman.x] = 0;
+            }
+            if (world[ninjaman.y][ninjaman.x] == 3) {
+            score += 5;
+            world[ninjaman.y][ninjaman.x] = 0;
+            }
+            document.getElementById("score").innerHTML = score;
+    }
+
+    function reset(){ //goal: make it so ninjaman can't spawn on a pumpkin
+        for (var i = 0; i < ghosts.length; i++){
+            var ghost = ghosts[i];
+            if (ghost.x == 1 && ghost.y == 6 || ghost.lastX == 1 && ghost.lastY == 6)
+            {
+                ninjaman.x = 2;
+                ninjaman.y = 6;
+            }
+            else {
+                ninjaman.x = 1;
+                ninjaman.y = 6;
+            }
+        }
+    drawNinjaman();
+    }
+
+    var lives = 3;
+
+    function hit (){
+        lives --;
+        if (lives <= 0) {
+            endGame();
+        }
+        else{
+        // Delay by 1ms so draw happens before alert (still needs work)
+        setTimeout(function () {
+            alert("You've been hit!\n Lives left: " + lives);
+            }, 1);
+        reset();
+        }
+    }
+
+    function endGame(){
+            // Delay by 1ms so draw happens before alert
+        setTimeout(function () {
+            alert("GAME OVER!\n Your Score: " + score);
+        }, 1);
+            document.location.reload();
+    }
+
+
+    //start game setup
+    drawNinjaman()
+    drawPumpkins()
+    drawWorld()
+    drawScore()
+
+    //keypress
+    document.onkeydown = function (e) {
+        if (e.keyCode == 37 || e.keyCode == 39 || e.keyCode == 40 || e.keyCode == 38){
+            
+        
+        //moving
+        if (e.keyCode == 37) {//left
+            if (world[ninjaman.y][ninjaman.x - 1] != 1) {
+                ninjaman.x--;
+            }
+            if (ninjaman.y == teleport1.y && ninjaman.x == teleport1.x-1){
+                ninjaman.y = teleport2.y, ninjaman.x = teleport2.x;
+            }
+        }
+        if (e.keyCode == 39) { //right
+            if (world[ninjaman.y][ninjaman.x + 1] != 1) {
+                ninjaman.x++;
+            }
+            if (ninjaman.y == teleport2.y && ninjaman.x == teleport2.x+1){
+                ninjaman.y = teleport1.y, ninjaman.x = teleport1.x;
+            }
+        }
+        if (e.keyCode == 40) { //down
+            if (world[ninjaman.y + 1][ninjaman.x] != 1) {
+                ninjaman.y++;
+            }
+        }
+        if (e.keyCode == 38) { //up
+            if (world[ninjaman.y - 1][ninjaman.x] != 1) {
+                ninjaman.y--;
+            }
+        }
+
+    //baddies
+        checkMovement()
+        movePumpkins()
+
+        //doodles
+        drawPumpkins()
+        drawScore()
+        drawNinjaman()
+        drawWorld()   
+
+        //hit
+        for (var i = 0; i < ghosts.length; i++){
+            var ghost = ghosts[i];
+            if (ghost.x == ninjaman.x && ghost.y == ninjaman.y ||
+            ghost.lastX == ninjaman.x && ghost.lastY == ninjaman.y)
+            {
+                hit();
+            }
+        }     
+
+        //goal: add end game when all sushi is eaten
+    }
+ }
+
+</script>
+</html>
